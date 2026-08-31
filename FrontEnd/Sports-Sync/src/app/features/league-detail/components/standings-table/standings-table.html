@@ -1,0 +1,39 @@
+<div class="overflow-x-auto">
+  <table class="w-full min-w-[560px] border-collapse text-left">
+    <thead>
+      <tr class="border-b border-white/10 font-mono text-[11px] uppercase tracking-widest text-slate-400">
+        <th class="py-3 pr-3 font-medium">Pos</th>
+        <th class="py-3 pr-3 font-medium">Club</th>
+        <th class="py-3 pr-3 text-right font-medium">Pl</th>
+        <th class="py-3 pr-3 text-right font-medium">W</th>
+        <th class="py-3 pr-3 text-right font-medium">D</th>
+        <th class="py-3 pr-3 text-right font-medium">L</th>
+        <th class="py-3 pr-3 text-right font-medium">GD</th>
+        <th class="py-3 pl-3 text-right font-medium">Pts</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of rows(); track row.teamId) {
+        <tr class="border-b border-white/5 text-sm">
+          <td class="py-4 pr-3 font-mono text-slate-400">{{ row.position < 10 ? '0' + row.position : row.position }}</td>
+          <td class="py-4 pr-3">
+            <div class="flex items-center gap-3">
+              @if (row.team) {
+                <app-team-badge [code]="row.team.shortCode" [badgeClass]="row.team.badgeClass" />
+              }
+              <span class="font-semibold">{{ row.team?.name }}</span>
+            </div>
+          </td>
+          <td class="py-4 pr-3 text-right text-slate-300">{{ row.played }}</td>
+          <td class="py-4 pr-3 text-right text-slate-300">{{ row.won }}</td>
+          <td class="py-4 pr-3 text-right text-slate-300">{{ row.drawn }}</td>
+          <td class="py-4 pr-3 text-right text-slate-300">{{ row.lost }}</td>
+          <td class="py-4 pr-3 text-right font-medium" [class]="row.goalDifference >= 0 ? 'text-accent' : 'text-red-400'">
+            {{ row.goalDifference > 0 ? '+' : '' }}{{ row.goalDifference }}
+          </td>
+          <td class="py-4 pl-3 text-right text-base font-bold">{{ row.points }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

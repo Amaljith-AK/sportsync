@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Team {
+  id          Int      @id
+  name        String
+  shortName   String?
+  tla         String?
+  crestUrl    String?
+  homeMatches Match[]  @relation("HomeTeam")
+  awayMatches Match[]  @relation("AwayTeam")
+}
+
+model Match {
+  id              Int      @id
+  competitionCode String
+  season          Int
+  matchday        Int?
+  utcDate         DateTime
+  status          String
+  homeTeamId      Int
+  awayTeamId      Int
+  homeScore       Int?
+  awayScore       Int?
+  winner          String?
+  lastSyncedAt    DateTime @updatedAt
+
+  homeTeam Team @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam Team @relation("AwayTeam", fields: [awayTeamId], references: [id])
+
+  @@index([status])
+  @@index([utcDate])
+}

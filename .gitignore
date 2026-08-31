@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+FrontEnd/Sports-Sync/node_modules/
+BackEnd/node_modules/
+
+# Environment secrets
+.env
+BackEnd/.env
+
+# Build output
+dist/
+FrontEnd/Sports-Sync/dist/
+BackEnd/dist/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Docs/reference material - not part of the actual project
+Doc Detail/

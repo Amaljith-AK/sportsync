@@ -1,0 +1,20 @@
+<div
+  class="flex flex-col gap-3 border p-5 transition-colors"
+  [class]="sport().status === 'live' ? 'border-accent bg-accent/5' : 'border-white/10'"
+>
+  <div class="flex items-center justify-between">
+    <span
+      class="font-[family-name:var(--font-display)] text-lg uppercase tracking-tight"
+      [class]="sport().status === 'live' ? 'text-accent' : 'text-white/40'"
+    >
+      {{ sport().name }}
+    </span>
+    <span
+      class="font-mono text-[10px] font-semibold uppercase tracking-widest"
+      [class]="sport().status === 'live' ? 'text-accent' : 'text-white/30'"
+    >
+      {{ sport().status === 'live' ? 'Live' : 'Soon' }}
+    </span>
+  </div>
+  <p class="text-sm text-slate-400">{{ sport().description }}</p>
+</div>

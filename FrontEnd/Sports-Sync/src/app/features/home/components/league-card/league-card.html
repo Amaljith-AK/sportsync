@@ -1,0 +1,29 @@
+<button
+  type="button"
+  (click)="open()"
+  class="group relative block aspect-square w-full overflow-hidden border border-white/10 transition-colors hover:border-accent/60"
+>
+  <img
+    [src]="league().logoUrl"
+    [alt]="league().name + ' crest'"
+    loading="lazy"
+    class="h-full w-full scale-110 object-cover transition-transform duration-200 group-hover:scale-[1.15]"
+  />
+
+  <div class="absolute inset-0 bg-black/70 transition-colors duration-200 group-hover:bg-black/60"></div>
+
+  <span class="absolute left-4 top-4 font-mono text-xs font-semibold uppercase tracking-widest text-accent">
+    {{ league().code }}
+  </span>
+
+  <div class="absolute inset-x-4 bottom-4 flex items-end justify-between gap-4">
+    <h3 class="font-[family-name:var(--font-display)] text-2xl uppercase leading-none tracking-tight text-white">
+      {{ league().name }}
+    </h3>
+    <span
+      class="flex h-8 w-8 shrink-0 items-center justify-center border border-white/30 bg-neutral-950/70 text-white backdrop-blur-sm transition-colors group-hover:border-accent group-hover:text-accent"
+    >
+      &rarr;
+    </span>
+  </div>
+</button>

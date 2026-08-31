@@ -1,0 +1,48 @@
+<aside class="flex flex-col gap-4">
+  <h2 class="font-mono text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Recent Results</h2>
+
+  @for (fixture of results(); track fixture.id) {
+    <div class="border border-white/10 p-4">
+      <div class="mb-3 flex items-center justify-between font-mono text-[11px] uppercase tracking-widest text-slate-500">
+        <span>Matchday {{ fixture.matchday }}</span>
+        <span class="flex items-center gap-1.5 text-red-400">
+          <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+          FT
+        </span>
+      </div>
+      <div class="flex items-center justify-between text-sm font-semibold">
+        <span>{{ teamName(fixture.homeTeamId) }}</span>
+        <span class="font-mono text-base">{{ fixture.homeScore }}</span>
+      </div>
+      <div class="mt-1 flex items-center justify-between text-sm font-semibold">
+        <span>{{ teamName(fixture.awayTeamId) }}</span>
+        <span class="font-mono text-base">{{ fixture.awayScore }}</span>
+      </div>
+    </div>
+  }
+
+  @if (upcoming(); as next) {
+    <div class="bg-accent p-4 text-neutral-950">
+      <div class="mb-3 flex items-center justify-between font-mono text-[11px] font-semibold uppercase tracking-widest">
+        <span>Upcoming / {{ next.kickoffLabel }}</span>
+        <span>Live Coverage</span>
+      </div>
+      <div class="flex items-center justify-between gap-3">
+        <span class="font-[family-name:var(--font-display)] text-lg uppercase leading-tight tracking-tight">
+          {{ teamName(next.homeTeamId) }} vs {{ teamName(next.awayTeamId) }}
+        </span>
+        <span class="flex h-9 w-9 shrink-0 items-center justify-center bg-neutral-950 font-mono text-xs font-bold text-accent">
+          VS
+        </span>
+      </div>
+    </div>
+  }
+
+  <button
+    type="button"
+    (click)="viewAllFixtures.emit()"
+    class="border border-white/10 py-3 text-center font-mono text-xs font-semibold uppercase tracking-widest text-slate-300 transition-colors hover:border-accent hover:text-accent"
+  >
+    View All Fixtures
+  </button>
+</aside>

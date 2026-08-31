@@ -1,0 +1,41 @@
+<header class="border-b border-white/10">
+  <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-4 px-6 py-5 sm:px-8">
+    <button
+      type="button"
+      (click)="goTo('/')"
+      class="font-[family-name:var(--font-display)] text-2xl tracking-tight text-accent"
+    >
+      SPORTSYNC
+    </button>
+
+    <nav class="flex flex-wrap items-center gap-x-8 gap-y-2">
+      @for (sport of navSports(); track sport.id) {
+        @if (sport.route) {
+          <button
+            type="button"
+            (click)="goTo(sport.route)"
+            class="border-b-2 pb-1 font-mono text-xs font-semibold uppercase tracking-widest transition-colors"
+            [class]="isActive(sport.route) ? 'border-accent text-accent' : 'border-transparent text-white hover:text-accent'"
+          >
+            {{ sport.label }}
+          </button>
+        } @else {
+          <span
+            class="flex cursor-not-allowed items-center gap-2 pb-1 font-mono text-xs font-semibold uppercase tracking-widest text-white/40"
+          >
+            {{ sport.label }}
+            <span class="rounded border border-white/20 px-1.5 py-0.5 text-[10px] text-white/40">Soon</span>
+          </span>
+        }
+      }
+    </nav>
+
+    <div class="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-slate-400">
+      <span class="relative flex h-2 w-2">
+        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75"></span>
+        <span class="relative inline-flex h-2 w-2 rounded-full bg-red-500"></span>
+      </span>
+      Live feed: demo data
+    </div>
+  </div>
+</header>

@@ -1,0 +1,27 @@
+<main class="mx-auto max-w-7xl px-6 py-12 sm:px-8">
+  <div class="mb-10 flex flex-wrap items-end justify-between gap-6">
+    <h1 class="font-[family-name:var(--font-display)] text-5xl uppercase leading-none tracking-tight sm:text-6xl">
+      Active Leagues
+    </h1>
+    <p class="max-w-xs font-mono text-xs uppercase tracking-widest text-slate-400">
+      Select a competition to view standings, fixture history, and team breakdowns.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    @for (league of leagues(); track league.id) {
+      <app-league-card [league]="league" />
+    }
+  </div>
+
+  <div class="mt-16 border-t border-white/10 pt-10">
+    <h2 class="mb-6 text-center font-mono text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+      Sports Coverage
+    </h2>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      @for (sport of sportsCoverage(); track sport.id) {
+        <app-sport-coverage-card [sport]="sport" />
+      }
+    </div>
+  </div>
+</main>
