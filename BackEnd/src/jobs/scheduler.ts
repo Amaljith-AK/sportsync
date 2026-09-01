@@ -5,7 +5,7 @@ import { syncService } from '../services/sync.service';
 const COMPETITIONS = ['PL', 'PD', 'BL1', 'SA'];
 
 export function startScheduler() {
-    cron.schedule('0 */6 * * *',async ()=>{
+    cron.schedule('*/10 * * * *',async ()=>{
 
         for(const code of COMPETITIONS){
             console.log(`⏰ Running scheduled sync for ${code}...`)
