@@ -26,6 +26,8 @@ export class LeagueDetail implements OnInit {
 
   protected readonly league = computed(() => this.data.findLeague(this.leagueId()));
 
+  protected readonly isLoading = computed(() => this.data.isLeagueLoading(this.leagueId()));
+
   protected readonly leaderName = computed(() => {
     const league = this.league();
     if (!league) return '';

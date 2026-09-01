@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable} from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { defer, finalize, Observable, Subject } from 'rxjs';
+import { LoadingService } from './loading.service';
 
 /**
  * Central read model for sports data. Backed by static demo data today;
@@ -12,23 +13,30 @@ export class BaseService {
     protected http = inject(HttpClient)
     protected baseUrl = 'https://sportsync-backend-badh.onrender.com/api';
     protected destroy$ = new Subject<void>();
+    private readonly loading = inject(LoadingService);
 
     protected get<T>(path:string):Observable<T>{
-        return this.http.get<T>(`${this.baseUrl}${path}`);
+        return this.withLoading(this.http.get<T>(`${this.baseUrl}${path}`));
     }
 
     protected post<T>(path:string,payload:unknown):Observable<T>{
-        return this.http.post<T>(`${this.baseUrl}${path}`,payload)
+        return this.withLoading(this.http.post<T>(`${this.baseUrl}${path}`,payload));
     }
 
     protected put<T>(path:string,payload:unknown):Observable<T>{
-        return this.http.put<T>(`${this.baseUrl}${path}`,payload)
+        return this.withLoading(this.http.put<T>(`${this.baseUrl}${path}`,payload));
     }
 
     protected delete<T>(path:string):Observable<T>{
-        return this.http.delete<T>(`${this.baseUrl}${path}`);
+        return this.withLoading(this.http.delete<T>(`${this.baseUrl}${path}`));
     }
-    
 
-    
+    /** Shows the loading overlay right as the request is subscribed to, and
+     * hides it once the response completes or errors out. */
+    private withLoading<T>(source$: Observable<T>): Observable<T> {
+        return defer(() => {
+            this.loading.show();
+            return source$.pipe(finalize(() => this.loading.hide()));
+        });
+    }
 }

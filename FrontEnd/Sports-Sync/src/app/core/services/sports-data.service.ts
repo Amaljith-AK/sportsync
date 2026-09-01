@@ -31,6 +31,9 @@ export class SportsDataService extends BaseService {
   private readonly _leagues = signal<League[]>(MOCK_LEAGUES);
   private readonly _sportsCoverage = signal<SportCoverageItem[]>(SPORTS_COVERAGE);
   private readonly _navSports = signal<NavSportItem[]>(NAV_SPORTS);
+  private readonly _loadingLeagueIds = signal<ReadonlySet<string>>(
+    new Set(LEAGUE_CONFIGS.map((config) => config.id)),
+  );
 
   readonly leagues = this._leagues.asReadonly();
   readonly sportsCoverage = this._sportsCoverage.asReadonly();
@@ -57,9 +60,25 @@ export class SportsDataService extends BaseService {
             const merged = [...others,league]
             return this.sortByConfigOrder(merged)
           })
+          this.finishLoading(config.id)
       },
-      error:(err)=>console.error(`Failed to load ${config.name}`, err),
+      error:(err)=>{
+        console.error(`Failed to load ${config.name}`, err)
+        this.finishLoading(config.id)
+      },
     })
+  }
+
+  private finishLoading(leagueId: string): void {
+    this._loadingLeagueIds.update((ids) => {
+      const next = new Set(ids);
+      next.delete(leagueId);
+      return next;
+    });
+  }
+
+  isLeagueLoading(leagueId: string): boolean {
+    return this._loadingLeagueIds().has(leagueId);
   }
 
   private sortByConfigOrder(leagues:League[]):League[]{
