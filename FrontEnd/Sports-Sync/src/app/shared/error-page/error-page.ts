@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
+import { ThemeService } from '../../core/services/theme.service';
 
 @Component({
   selector: 'app-error-page',
@@ -9,6 +10,7 @@ import { Router } from '@angular/router';
 })
 export class ErrorPage {
   private readonly router = inject(Router);
+  private themeService = inject(ThemeService)
 
   readonly code = input.required<string>();
   readonly title = input.required<string>();
@@ -17,6 +19,8 @@ export class ErrorPage {
 
   protected goHome(): void {
     void this.router.navigate(['/']);
+    this.themeService.setTheme('football')
+
   }
 
   protected retry(): void {

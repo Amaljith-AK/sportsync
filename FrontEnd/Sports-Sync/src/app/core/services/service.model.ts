@@ -92,3 +92,6 @@ export const BADGE_COLORS = [
   'bg-rose-900',
   'bg-slate-700',
 ];
+
+
+export const THEME_CLASSES = ['theme-f1']

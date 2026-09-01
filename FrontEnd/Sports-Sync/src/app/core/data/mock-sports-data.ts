@@ -194,7 +194,7 @@ export const SPORTS_COVERAGE: SportCoverageItem[] = [
 
 export const NAV_SPORTS: NavSportItem[] = [
   { id: 'football', label: 'Football', status: 'live', route: '/' },
-  { id: 'formula-1', label: 'Formula 1', status: 'soon', route: null },
-  { id: 'tennis', label: 'Tennis', status: 'soon', route: null },
-  { id: 'nba', label: 'NBA', status: 'soon', route: null },
+  { id: 'formula-1', label: 'Formula 1', status: 'soon', route: null }, // /f1
+  { id: 'tennis', label: 'Tennis', status: 'soon', route: null }, // tennis
+  { id: 'nba', label: 'NBA', status: 'soon', route: null }, //nba
 ];

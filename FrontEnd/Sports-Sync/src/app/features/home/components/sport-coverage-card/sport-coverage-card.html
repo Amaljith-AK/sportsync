@@ -1,6 +1,7 @@
 <div
   class="flex h-full flex-col gap-3 border p-5 transition-colors"
   [class]="sport().status === 'live' ? 'border-accent bg-accent/5' : 'border-white/10'"
+  (click)="navigate(sport().id)"
 >
   <div class="flex items-center justify-between">
     <span
