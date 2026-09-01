@@ -10,7 +10,7 @@ import { Observable, Subject } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class BaseService {
     protected http = inject(HttpClient)
-    protected baseUrl = 'http://localhost:4000/api';
+    protected baseUrl = 'https://sportsync-backend-badh.onrender.com/api';
     protected destroy$ = new Subject<void>();
 
     protected get<T>(path:string):Observable<T>{
