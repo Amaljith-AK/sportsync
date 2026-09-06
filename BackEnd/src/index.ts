@@ -8,6 +8,7 @@ import footballRoutes from './routes/football.routes';
 import { startScheduler } from './jobs/scheduler';
 import { initLiveGateway } from './sockets/liveGateway';
 import { startLiveCheckJob } from './jobs/liveCheck.job';
+import { startPredictionScheduler } from './jobs/predictUpcoming.job';
 
 
 const app = express()
@@ -17,6 +18,7 @@ app.use('/api/football',footballRoutes)
 
 startScheduler();
 startLiveCheckJob();
+startPredictionScheduler();
 
 const server = http.createServer(app)
 initLiveGateway(server)

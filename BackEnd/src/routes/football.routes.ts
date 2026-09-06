@@ -5,6 +5,7 @@ import { footballDataService } from '../services/footballData.service';
 
 const router = Router()
 
+
 router.get('/matches/:code',async(req,res)=>{
     try{
         const matches = await prisma.match.findMany({
@@ -17,7 +18,8 @@ router.get('/matches/:code',async(req,res)=>{
             },
             include:{
                 homeTeam:true,
-                awayTeam:true
+                awayTeam:true,
+                prediction:true
             },
             orderBy:{
                 utcDate:'asc'

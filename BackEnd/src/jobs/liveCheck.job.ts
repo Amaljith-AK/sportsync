@@ -11,7 +11,7 @@ export function startLiveCheckJob(){
 
             const candidates = await prisma.match.findMany({
                 where:{
-                    status:'SCHEDULED',
+                    status:{in:['SCHEDULED','TIMED']},
                     utcDate:{
                         lte:now,
                         gte:new Date(now.getTime() - 150 * 60 * 1000)

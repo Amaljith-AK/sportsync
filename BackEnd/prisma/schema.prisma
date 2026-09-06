@@ -33,6 +33,20 @@ model Match {
   homeTeam Team @relation("HomeTeam", fields: [homeTeamId], references: [id])
   awayTeam Team @relation("AwayTeam", fields: [awayTeamId], references: [id])
 
+  prediction Prediction?
+
   @@index([status])
   @@index([utcDate])
 }
+
+
+model Prediction {
+  id Int @id @default(autoincrement())
+  matchId Int @unique
+  homeWinPct Float
+  drawPct Float
+  awayWinPct Float
+  computedAt DateTime @default(now())
+
+  match Match @relation(fields:[matchId],references: [id])
+ }
