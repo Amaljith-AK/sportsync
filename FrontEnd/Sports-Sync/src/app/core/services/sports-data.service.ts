@@ -107,6 +107,7 @@ export class SportsDataService extends BaseService {
       name: t.name,
       shortCode: t.tla ?? t.name.slice(0, 2).toUpperCase(),
       badgeClass: BADGE_COLORS[index % BADGE_COLORS.length],
+      crestUrl: t.crestUrl,
       stadium: 'Unknown',
       founded: 0,
       manager: 'Unknown',
@@ -131,6 +132,7 @@ export class SportsDataService extends BaseService {
               .toLocaleString(undefined, { weekday: 'short', hour: '2-digit', minute: '2-digit' })
               .toUpperCase(),
       kickoffAt: m.utcDate,
+      prediction: m.prediction,
     };
   }
 
@@ -170,6 +172,7 @@ export class SportsDataService extends BaseService {
 
     return totalTable.table.map((row) => ({
       teamId: String(row.team.id),
+      teamCrest: row.team.crest,
       played: row.playedGames,
       won: row.won,
       drawn: row.draw,

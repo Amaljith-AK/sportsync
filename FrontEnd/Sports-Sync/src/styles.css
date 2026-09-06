@@ -35,6 +35,23 @@ body.theme-f1 {
   animation: wipe-diagonal 0.6s ease-in-out forwards;
 }
 
+/* Strip Material's default dialog chrome so the live-popup bubble draws its
+   own surface, and neutralize any transform so its fixed-position close
+   target stays anchored to the viewport rather than this container. */
+.live-popup-panel .mat-mdc-dialog-container,
+.live-popup-panel .mat-mdc-dialog-inner-container,
+.live-popup-panel .mat-mdc-dialog-surface {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
+  overflow: visible;
+  transform: none;
+  max-width: none;
+  min-width: 0;
+  min-height: 0;
+}
+
 @keyframes wipe-diagonal {
   0% {
     clip-path: polygon(0 0, 0 0, 0 0, 0 0);

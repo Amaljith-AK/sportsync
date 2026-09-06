@@ -1,14 +1,27 @@
 <div class="flex flex-col">
   @for (fixture of rows(); track fixture.id) {
-    <div class="flex items-center gap-4 border-b border-white/5 py-4 text-sm">
+    <div
+      class="group relative flex items-center gap-4 border-b border-white/5 py-4 text-sm"
+      [class]="
+        fixture.status === 'LIVE'
+          ? 'cursor-pointer transition-colors hover:bg-white/5'
+          : fixture.status === 'UPCOMING'
+            ? 'transition-colors max-sm:cursor-pointer max-sm:hover:bg-white/5'
+            : ''
+      "
+      (click)="onRowClick(fixture, $event)"
+    >
       <span class="w-12 shrink-0 font-mono text-[11px] uppercase tracking-widest text-slate-500">
         MD {{ fixture.matchday }}
       </span>
 
       <span class="flex-1 text-right font-semibold">{{ fixture.homeTeam?.name }}</span>
 
-      @if (fixture.status === 'FT') {
-        <span class="flex w-16 shrink-0 items-center justify-center gap-2 font-mono text-base font-bold">
+      @if (fixture.status === 'FT' || fixture.status === 'LIVE') {
+        <span
+          class="flex w-16 shrink-0 items-center justify-center gap-2 font-mono text-base font-bold"
+          [class]="fixture.status === 'LIVE' ? 'text-red-400' : ''"
+        >
           {{ fixture.homeScore }} - {{ fixture.awayScore }}
         </span>
       } @else {
@@ -19,9 +32,33 @@
 
       <span class="flex-1 text-left font-semibold">{{ fixture.awayTeam?.name }}</span>
 
-      <span class="w-10 shrink-0 text-right font-mono text-[11px] uppercase tracking-widest text-slate-500">
-        {{ fixture.status === 'FT' ? 'FT' : 'vs' }}
+      <span
+        class="flex w-10 shrink-0 items-center justify-end gap-1 font-mono text-[11px] uppercase tracking-widest"
+        [class]="fixture.status === 'LIVE' ? 'text-red-400' : 'text-slate-500'"
+      >
+        @if (fixture.status === 'LIVE') {
+          <span class="relative flex h-1.5 w-1.5">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75"></span>
+            <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-500"></span>
+          </span>
+          Live
+        } @else {
+          {{ fixture.status === 'FT' ? 'FT' : 'vs' }}
+        }
       </span>
+
+      @if (fixture.status === 'UPCOMING' && fixture.prediction) {
+        <div
+          class="pointer-events-none absolute bottom-full left-1/2 z-20 -translate-x-1/2 pb-2 sm:bottom-auto sm:left-full sm:top-1/2 sm:translate-x-0 sm:-translate-y-1/2 sm:pb-0 sm:pl-3 group-hover:block"
+          [class]="activeProbabilityId() === fixture.id ? 'block' : 'hidden'"
+        >
+          <app-win-probability
+            [homeTeam]="fixture.homeTeam"
+            [awayTeam]="fixture.awayTeam"
+            [probability]="fixture.prediction"
+          />
+        </div>
+      }
     </div>
   }
 </div>

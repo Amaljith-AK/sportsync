@@ -3,6 +3,7 @@ export interface Team {
   name: string;
   shortCode: string;
   badgeClass: string;
+  crestUrl: string | null;
   stadium: string;
   founded: number;
   manager: string;
@@ -10,6 +11,7 @@ export interface Team {
 
 export interface StandingEntry {
   teamId: string;
+  teamCrest: string | null;
   played: number;
   won: number;
   drawn: number;
@@ -19,6 +21,15 @@ export interface StandingEntry {
 }
 
 export type FixtureStatus = 'FT' | 'UPCOMING' | 'LIVE';
+
+export interface MatchPrediction {
+  id: number;
+  matchId: number;
+  homeWinPct: number;
+  drawPct: number;
+  awayWinPct: number;
+  computedAt: string;
+}
 
 export interface Fixture {
   id: string;
@@ -30,6 +41,7 @@ export interface Fixture {
   status: FixtureStatus;
   kickoffLabel: string;
   kickoffAt: string;
+  prediction: MatchPrediction | null;
 }
 
 export interface League {

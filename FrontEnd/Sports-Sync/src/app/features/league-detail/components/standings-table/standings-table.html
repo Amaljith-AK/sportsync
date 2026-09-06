@@ -18,7 +18,9 @@
           <td class="py-4 pr-3 font-mono text-slate-400">{{ row.position < 10 ? '0' + row.position : row.position }}</td>
           <td class="py-4 pr-3">
             <div class="flex items-center gap-3">
-              @if (row.team) {
+              @if (row.teamCrest) {
+                <img [src]="row.teamCrest" [alt]="row.team?.name ?? ''" class="h-6 w-6 shrink-0 object-contain" />
+              } @else if (row.team) {
                 <app-team-badge [code]="row.team.shortCode" [badgeClass]="row.team.badgeClass" />
               }
               <span class="font-semibold">{{ row.team?.name }}</span>

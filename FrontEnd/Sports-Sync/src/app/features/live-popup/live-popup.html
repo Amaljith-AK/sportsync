@@ -1,0 +1,53 @@
+<div class="popup-root">
+  <div class="close-zone-wrapper" [class.visible]="dragging()">
+    <div #closeZone class="close-zone" [class.armed]="armed()">
+      <span class="close-icon">&times;</span>
+    </div>
+    <span class="close-label" [class.armed]="armed()">Release to close</span>
+  </div>
+
+  <div
+    class="bubble"
+    [class.dragging]="dragging()"
+    cdkDrag
+    cdkDragBoundary="body"
+    (cdkDragStarted)="onDragStarted()"
+    (cdkDragMoved)="onDragMoved($event)"
+    (cdkDragEnded)="onDragEnded()"
+  >
+    <div class="bubble-header">
+      <span class="live-dot">
+        <span class="live-dot-ping"></span>
+        <span class="live-dot-core"></span>
+      </span>
+      <span class="live-label">Live</span>
+      @if (data.leagueName) {
+        <span class="league-name">{{ data.leagueName }}</span>
+      }
+    </div>
+
+    <div class="teams">
+      <div class="team">
+        @if (data.homeTeam?.crestUrl) {
+          <img [src]="data.homeTeam?.crestUrl" [alt]="data.homeTeam?.name ?? ''" class="h-9 w-9 shrink-0 object-contain" />
+        } @else {
+          <app-team-badge [code]="data.homeTeam?.shortCode ?? '?'" [badgeClass]="data.homeTeam?.badgeClass ?? 'bg-slate-700'" size="md" />
+        }
+        <span class="team-name">{{ data.homeTeam?.name ?? 'Home' }}</span>
+      </div>
+
+      <div class="score">{{ data.score.home ?? 0 }} &ndash; {{ data.score.away ?? 0 }}</div>
+
+      <div class="team">
+        @if (data.awayTeam?.crestUrl) {
+          <img [src]="data.awayTeam?.crestUrl" [alt]="data.awayTeam?.name ?? ''" class="h-9 w-9 shrink-0 object-contain" />
+        } @else {
+          <app-team-badge [code]="data.awayTeam?.shortCode ?? '?'" [badgeClass]="data.awayTeam?.badgeClass ?? 'bg-slate-700'" size="md" />
+        }
+        <span class="team-name">{{ data.awayTeam?.name ?? 'Away' }}</span>
+      </div>
+    </div>
+
+    <div class="meta">MD {{ data.fixture.matchday }} &middot; {{ data.fixture.kickoffLabel }}</div>
+  </div>
+</div>

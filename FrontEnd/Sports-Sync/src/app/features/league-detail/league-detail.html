@@ -57,7 +57,7 @@
             <app-standings-table [standings]="league.standings" [teams]="league.teams" />
           }
           @case ('fixtures') {
-            <app-fixtures-list [fixtures]="league.fixtures" [teams]="league.teams" />
+            <app-fixtures-list [fixtures]="league.fixtures" [teams]="league.teams" [leagueName]="league.name" />
           }
           @case ('teams') {
             <app-teams-grid [teams]="league.teams" />

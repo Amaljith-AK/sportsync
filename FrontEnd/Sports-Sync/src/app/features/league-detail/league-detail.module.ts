@@ -6,9 +6,11 @@ import { StandingsTable } from './components/standings-table/standings-table';
 import { FixturesList } from './components/fixtures-list/fixtures-list';
 import { TeamsGrid } from './components/teams-grid/teams-grid';
 import { RecentResultsPanel } from './components/recent-results-panel/recent-results-panel';
+import { LivePopupModule } from '../live-popup/live-popup.module';
+import { WinProbabilityModule } from '../win-probability/win-probability.module';
 
 @NgModule({
   declarations: [LeagueDetail, StandingsTable, FixturesList, TeamsGrid, RecentResultsPanel],
-  imports: [LeagueDetailRoutingModule, SharedModule],
+  imports: [LeagueDetailRoutingModule, SharedModule, LivePopupModule, WinProbabilityModule],
 })
 export class LeagueDetailModule {}
