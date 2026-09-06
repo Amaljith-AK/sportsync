@@ -9,12 +9,14 @@ import { startScheduler } from './jobs/scheduler';
 import { initLiveGateway } from './sockets/liveGateway';
 import { startLiveCheckJob } from './jobs/liveCheck.job';
 import { startPredictionScheduler } from './jobs/predictUpcoming.job';
+import adminRoutes from './routes/admin.routes';
 
 
 const app = express()
 app.use(cors())
 app.use(express.json())
 app.use('/api/football',footballRoutes)
+app.use('/api/admin', adminRoutes);
 
 startScheduler();
 startLiveCheckJob();

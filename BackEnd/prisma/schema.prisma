@@ -7,13 +7,18 @@ datasource db {
 }
 
 model Team {
-  id          Int      @id
+  id          Int        @id
   name        String
   shortName   String?
   tla         String?
   crestUrl    String?
-  homeMatches Match[]  @relation("HomeTeam")
-  awayMatches Match[]  @relation("AwayTeam")
+  stadium     String?
+  founded     Int?
+  manager     String?
+  clubColors  String?
+  homeMatches Match[]    @relation("HomeTeam")
+  awayMatches Match[]    @relation("AwayTeam")
+  standings   Standing[]
 }
 
 model Match {
@@ -39,14 +44,34 @@ model Match {
   @@index([utcDate])
 }
 
+model Standing {
+  id              Int      @id @default(autoincrement())
+  competitionCode String
+  season          Int
+  teamId          Int
+  position        Int
+  playedGames     Int
+  won             Int
+  draw            Int
+  lost            Int
+  points          Int
+  goalsFor        Int
+  goalsAgainst    Int
+  goalDifference  Int
+  lastSyncedAt    DateTime @updatedAt
+
+  team Team @relation(fields: [teamId], references: [id])
+
+  @@unique([competitionCode, teamId])
+}
 
 model Prediction {
-  id Int @id @default(autoincrement())
-  matchId Int @unique
+  id         Int      @id @default(autoincrement())
+  matchId    Int      @unique
   homeWinPct Float
-  drawPct Float
+  drawPct    Float
   awayWinPct Float
   computedAt DateTime @default(now())
 
-  match Match @relation(fields:[matchId],references: [id])
- }
+  match Match @relation(fields: [matchId], references: [id])
+}

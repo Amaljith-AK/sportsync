@@ -6,13 +6,18 @@ const client = axios.create({
 })
 
 export const footballDataService = {
-    async getMatches(competitionCode:string){
-        const res = await client.get(`/competitions/${competitionCode}/matches`)
-        return res.data
-    },
+  async getMatches(competitionCode: string) {
+    const res = await client.get(`/competitions/${competitionCode}/matches`);
+    return res.data;
+  },
 
-    async getStandings(competitionCode:string){
-        const res = await client.get(`/competitions/${competitionCode}/standings`)
-        return res.data
-    }
-}
+  async getStandings(competitionCode: string) {
+    const res = await client.get(`/competitions/${competitionCode}/standings`);
+    return res.data;
+  },
+
+  async getTeam(teamId: number) {
+    const res = await client.get(`/teams/${teamId}`);
+    return res.data;
+  },
+};

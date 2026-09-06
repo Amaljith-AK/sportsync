@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { prisma } from '../lib/prisma';
-import { footballDataService } from '../services/footballData.service';
 
 
 const router = Router()
@@ -74,8 +73,18 @@ router.get('/matches/:id',async(req,res)=>{
 
 router.get('/standings/:code',async(req,res)=>{
     try{
-        const data = await footballDataService.getStandings(req.params.code)
-        res.json(data)
+        const standings = await prisma.standing.findMany({
+            where:{
+                competitionCode: req.params.code
+            },
+            include:{
+                team:true
+            },
+            orderBy:{
+                position:'asc'
+            }
+        });
+        res.json(standings);
     }catch(err){
         console.error(err);
         res.status(500).json({ message: 'Failed to fetch standings' });

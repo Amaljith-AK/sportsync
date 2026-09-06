@@ -60,5 +60,65 @@ export const syncService = {
             })
         }
         console.log(`✅ Synced ${data.matches.length} matches for ${code}`)
+    },
+
+    async syncStandings(code:string){
+        const data = await footballDataService.getStandings(code)
+
+        const total = data.standings.find((s:any)=>s.type === 'TOTAL')
+        if(!total) return;
+
+        for (const row of total.table){
+            await prisma.team.upsert({
+                where:{id:row.team.id},
+                update:{
+                    name: row.team.name,
+                    tla: row.team.tla,
+                    crestUrl: row.team.crest
+                },
+                create:{
+                    id: row.team.id,
+                    name: row.team.name,
+                    tla: row.team.tla,
+                    crestUrl: row.team.crest
+                }
+            });
+
+            await prisma.standing.upsert({
+                where:{
+                    competitionCode_teamId:{
+                        competitionCode: code,
+                        teamId: row.team.id
+                    }
+                },
+                update:{
+                    season: data.season.id,
+                    position: row.position,
+                    playedGames: row.playedGames,
+                    won: row.won,
+                    draw: row.draw,
+                    lost: row.lost,
+                    points: row.points,
+                    goalsFor: row.goalsFor,
+                    goalsAgainst: row.goalsAgainst,
+                    goalDifference: row.goalDifference
+                },
+                create:{
+                    competitionCode: code,
+                    season: data.season.id,
+                    teamId: row.team.id,
+                    position: row.position,
+                    playedGames: row.playedGames,
+                    won: row.won,
+                    draw: row.draw,
+                    lost: row.lost,
+                    points: row.points,
+                    goalsFor: row.goalsFor,
+                    goalsAgainst: row.goalsAgainst,
+                    goalDifference: row.goalDifference
+                }
+            })
+        }
+        console.log(`✅ Synced standings for ${code}`)
     }
 }

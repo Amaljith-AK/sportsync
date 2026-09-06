@@ -11,6 +11,7 @@ export function startScheduler() {
             console.log(`⏰ Running scheduled sync for ${code}...`)
             try{
                 await syncService.syncCompetition(code);
+                await syncService.syncStandings(code);
             }catch(err){
                 console.error(`❌ Scheduled sync failed for ${code}:`, err);
             }
@@ -18,4 +19,12 @@ export function startScheduler() {
     });
 
     console.log('📅 Scheduler initialized — syncing every 6 hours',COMPETITIONS.join(', '))
+}
+
+
+export async function runManualSync(){
+    for (const code of COMPETITIONS){
+        await syncService.syncCompetition(code);
+        await syncService.syncStandings(code);
+    }
 }
