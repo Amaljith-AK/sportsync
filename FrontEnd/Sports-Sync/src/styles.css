@@ -52,6 +52,13 @@ body.theme-f1 {
   min-height: 0;
 }
 
+/* While the live-popup bubble is open, suppress hover-only UI elsewhere on the
+   page — otherwise the cursor passing over an upcoming fixture (e.g. while
+   dragging the bubble around) pops the win-probability card up underneath it. */
+body.live-popup-open .win-probability-popover {
+  display: none !important;
+}
+
 @keyframes wipe-diagonal {
   0% {
     clip-path: polygon(0 0, 0 0, 0 0, 0 0);

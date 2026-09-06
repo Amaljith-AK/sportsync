@@ -6,13 +6,18 @@
     <span class="close-label" [class.armed]="armed()">Release to close</span>
   </div>
 
+  <!-- Boundary is the overlay container, not "body": body is styled height:100%
+       (viewport-tall, not page-tall), so its rect shifts with scroll and clamps
+       dragging short of the close-zone the further down the page you are. The
+       overlay container is always exactly the true viewport, scroll or not. -->
   <div
+    #bubble
     class="bubble"
     [class.dragging]="dragging()"
     cdkDrag
-    cdkDragBoundary="body"
+    cdkDragBoundary=".cdk-overlay-container"
     (cdkDragStarted)="onDragStarted()"
-    (cdkDragMoved)="onDragMoved($event)"
+    (cdkDragMoved)="onDragMoved()"
     (cdkDragEnded)="onDragEnded()"
   >
     <div class="bubble-header">

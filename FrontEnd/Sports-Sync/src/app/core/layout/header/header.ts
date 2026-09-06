@@ -4,6 +4,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { SportsDataService } from '../../services/sports-data.service';
 import { ThemeService } from '../../services/theme.service';
+import { AdminAuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -15,6 +16,7 @@ export class Header {
   private readonly data = inject(SportsDataService);
   private readonly router = inject(Router);
   private themeService = inject(ThemeService)
+  private readonly adminAuth = inject(AdminAuthService);
 
   protected readonly navSports = this.data.navSports;
 
@@ -30,6 +32,10 @@ export class Header {
     if (!route) return false;
     const url = this.activeUrl();
     return route === '/' ? url === '/' || url.startsWith('/leagues') : url === route;
+  }
+
+  protected goToAdmin(): void {
+    void this.router.navigate([this.adminAuth.getkey() ? '/admin' : '/admin/login']);
   }
 
   protected goTo(route: string | null): void {

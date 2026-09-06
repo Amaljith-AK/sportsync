@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable} from '@angular/core';
 import { defer, finalize, Observable, Subject } from 'rxjs';
 import { LoadingService } from './loading.service';
@@ -15,20 +15,20 @@ export class BaseService {
     protected destroy$ = new Subject<void>();
     private readonly loading = inject(LoadingService);
 
-    protected get<T>(path:string):Observable<T>{
-        return this.withLoading(this.http.get<T>(`${this.baseUrl}${path}`));
+    protected get<T>(path:string,headers?:HttpHeaders):Observable<T>{
+        return this.withLoading(this.http.get<T>(`${this.baseUrl}${path}`,{ headers }));
     }
 
-    protected post<T>(path:string,payload:unknown):Observable<T>{
-        return this.withLoading(this.http.post<T>(`${this.baseUrl}${path}`,payload));
+    protected post<T>(path:string,payload:unknown,headers?:HttpHeaders):Observable<T>{
+        return this.withLoading(this.http.post<T>(`${this.baseUrl}${path}`,payload,{ headers }));
     }
 
-    protected put<T>(path:string,payload:unknown):Observable<T>{
-        return this.withLoading(this.http.put<T>(`${this.baseUrl}${path}`,payload));
+    protected put<T>(path:string,payload:unknown,headers?:HttpHeaders):Observable<T>{
+        return this.withLoading(this.http.put<T>(`${this.baseUrl}${path}`,payload,{ headers }));
     }
 
-    protected delete<T>(path:string):Observable<T>{
-        return this.withLoading(this.http.delete<T>(`${this.baseUrl}${path}`));
+    protected delete<T>(path:string,headers?:HttpHeaders):Observable<T>{
+        return this.withLoading(this.http.delete<T>(`${this.baseUrl}${path}`,{ headers }));
     }
 
     /** Shows the loading overlay right as the request is subscribed to, and

@@ -4,6 +4,9 @@ export interface BackendTeam {
   shortName: string | null;
   tla: string | null;
   crestUrl: string | null;
+  stadium: string | null;
+  founded: number | null;
+  manager: string | null;
 }
 
 export interface BackendPrediction {
@@ -32,19 +35,21 @@ export interface BackendMatch {
   prediction: BackendPrediction | null;
 }
 
-export interface StandingsResponse {
-  standings: {
-    type: string;
-    table: {
-      team: { id: number; name: string; crest: string | null };
-      playedGames: number;
-      won: number;
-      draw: number;
-      lost: number;
-      goalDifference: number;
-      points: number;
-    }[];
-  }[];
+export interface BackendStanding {
+  id: number;
+  competitionCode: string;
+  season: number;
+  teamId: number;
+  position: number;
+  playedGames: number;
+  won: number;
+  draw: number;
+  lost: number;
+  points: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  goalDifference: number;
+  team: BackendTeam;
 }
 
 export interface LeagueConfig {
@@ -114,4 +119,6 @@ export const BADGE_COLORS = [
 export const THEME_CLASSES = ['theme-f1']
 
 export const SOCKET_URL = "wss://sportsync-backend-badh.onrender.com"
+
+export const STORAGE_KEY = 'sportsync_admin_key';
 

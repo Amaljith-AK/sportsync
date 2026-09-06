@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
-import { CdkDragMove } from '@angular/cdk/drag-drop';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Fixture, Team } from '../../core/models/sport.models';
 
@@ -27,6 +26,7 @@ export class LivePopup {
   protected readonly data = inject<LivePopupData>(MAT_DIALOG_DATA);
 
   private readonly closeZone = viewChild.required<ElementRef<HTMLElement>>('closeZone');
+  private readonly bubble = viewChild.required<ElementRef<HTMLElement>>('bubble');
 
   protected readonly dragging = signal(false);
   protected readonly armed = signal(false);
@@ -35,8 +35,8 @@ export class LivePopup {
     this.dragging.set(true);
   }
 
-  protected onDragMoved(event: CdkDragMove): void {
-    this.armed.set(this.isOverCloseZone(event.pointerPosition));
+  protected onDragMoved(): void {
+    this.armed.set(this.isOverCloseZone());
   }
 
   protected onDragEnded(): void {
@@ -49,10 +49,19 @@ export class LivePopup {
     }
   }
 
-  private isOverCloseZone(point: { x: number; y: number }): boolean {
-    const rect = this.closeZone().nativeElement.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    return Math.hypot(point.x - centerX, point.y - centerY) <= CLOSE_ZONE_RADIUS_PX;
+  /** Compares two live getBoundingClientRect() reads rather than CDK's own
+   * pointer-position tracking, which drifts out of sync with the page once
+   * you scroll mid-drag (position: fixed + free-drag + page scroll is a
+   * known rough edge in @angular/cdk/drag-drop). */
+  private isOverCloseZone(): boolean {
+    const bubbleRect = this.bubble().nativeElement.getBoundingClientRect();
+    const zoneRect = this.closeZone().nativeElement.getBoundingClientRect();
+
+    const bubbleCenterX = bubbleRect.left + bubbleRect.width / 2;
+    const bubbleCenterY = bubbleRect.top + bubbleRect.height / 2;
+    const zoneCenterX = zoneRect.left + zoneRect.width / 2;
+    const zoneCenterY = zoneRect.top + zoneRect.height / 2;
+
+    return Math.hypot(bubbleCenterX - zoneCenterX, bubbleCenterY - zoneCenterY) <= CLOSE_ZONE_RADIUS_PX;
   }
 }

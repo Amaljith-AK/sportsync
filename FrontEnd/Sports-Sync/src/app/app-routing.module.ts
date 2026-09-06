@@ -15,6 +15,10 @@ const routes: Routes = [
     loadChildren: () => import('./features/server-error/server-error.module').then((m) => m.ServerErrorModule),
   },
   {
+    path: 'admin',
+    loadChildren: () => import('./features/admin/admin.module').then((m) => m.AdminModule),
+  },
+  {
     path: '**',
     loadChildren: () => import('./features/not-found/not-found.module').then((m) => m.NotFoundModule),
   },

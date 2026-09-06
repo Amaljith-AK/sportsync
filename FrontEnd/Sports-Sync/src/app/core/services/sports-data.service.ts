@@ -18,7 +18,7 @@ import {
   BADGE_COLORS,
   LEAGUE_CONFIGS,
   LeagueConfig,
-  StandingsResponse,
+  BackendStanding,
 } from './service.model';
 
 /**
@@ -43,30 +43,31 @@ export class SportsDataService extends BaseService {
     (super(), this.loadAllLeagues());
   }
 
-  private loadAllLeagues():void{
-    LEAGUE_CONFIGS.forEach(config => this.loadLeague(config))
+  private loadAllLeagues(): void {
+    LEAGUE_CONFIGS.forEach((config) => this.loadLeague(config));
   }
 
-
-  private loadLeague(config:LeagueConfig):void{
+  private loadLeague(config: LeagueConfig): void {
     forkJoin({
-      matches:this.get<BackendMatch[]>(`/football/matches/${config.code}`),
-      standings:this.get<StandingsResponse>(`/football/standings/${config.code}`)
-    }).pipe(takeUntilDestroyed()).subscribe({
-      next:({matches,standings})=>{
-          const league = this.buildLeague(config,matches,this.mapStandings(standings));
-          this._leagues.update((leagues)=>{
-            const others = leagues.filter((l)=>l.id !== league.id)
-            const merged = [...others,league]
-            return this.sortByConfigOrder(merged)
-          })
-          this.finishLoading(config.id)
-      },
-      error:(err)=>{
-        console.error(`Failed to load ${config.name}`, err)
-        this.finishLoading(config.id)
-      },
+      matches: this.get<BackendMatch[]>(`/football/matches/${config.code}`),
+      standings: this.get<BackendStanding[]>(`/football/standings/${config.code}`),
     })
+      .pipe(takeUntilDestroyed())
+      .subscribe({
+        next: ({ matches, standings }) => {
+          const league = this.buildLeague(config, matches, standings);
+          this._leagues.update((leagues) => {
+            const others = leagues.filter((l) => l.id !== league.id);
+            const merged = [...others, league];
+            return this.sortByConfigOrder(merged);
+          });
+          this.finishLoading(config.id);
+        },
+        error: (err) => {
+          console.error(`Failed to load ${config.name}`, err);
+          this.finishLoading(config.id);
+        },
+      });
   }
 
   private finishLoading(leagueId: string): void {
@@ -81,11 +82,10 @@ export class SportsDataService extends BaseService {
     return this._loadingLeagueIds().has(leagueId);
   }
 
-  private sortByConfigOrder(leagues:League[]):League[]{
-    const orderMap = new Map(LEAGUE_CONFIGS.map((c,index)=>[c.id,index]))
-    return [...leagues].sort((a,b)=>(orderMap.get(a.id)??0)-(orderMap.get(b.id)??0))
+  private sortByConfigOrder(leagues: League[]): League[] {
+    const orderMap = new Map(LEAGUE_CONFIGS.map((c, index) => [c.id, index]));
+    return [...leagues].sort((a, b) => (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0));
   }
-
 
   findLeague(leagueId: string): League | undefined {
     return this._leagues().find((league) => league.id === leagueId);
@@ -108,9 +108,9 @@ export class SportsDataService extends BaseService {
       shortCode: t.tla ?? t.name.slice(0, 2).toUpperCase(),
       badgeClass: BADGE_COLORS[index % BADGE_COLORS.length],
       crestUrl: t.crestUrl,
-      stadium: 'Unknown',
-      founded: 0,
-      manager: 'Unknown',
+      stadium: t.stadium ?? 'Unknown',
+      founded: t.founded ?? 0,
+      manager: t.manager ?? 'Unknown',
     };
   }
 
@@ -136,7 +136,11 @@ export class SportsDataService extends BaseService {
     };
   }
 
-  private buildLeague(config:LeagueConfig ,matches: BackendMatch[],standings:StandingEntry[]): League {
+  private buildLeague(
+    config: LeagueConfig,
+    matches: BackendMatch[],
+    standings: BackendStanding[],
+  ): League {
     const teamsMap = new Map<string, Team>();
     let index = 0;
 
@@ -147,6 +151,25 @@ export class SportsDataService extends BaseService {
       if (!teamsMap.has(String(m.awayTeam.id))) {
         teamsMap.set(String(m.awayTeam.id), this.mapTeams(m.awayTeam, index++));
       }
+    });
+
+    // The standings response's `team` also carries stadium/founded/manager
+    // (backfilled by the enrich-teams job), so merge it in for teams the
+    // matches endpoint didn't already cover with that data.
+    standings.forEach((row) => {
+      const teamId = String(row.team.id);
+      const existing = teamsMap.get(teamId);
+      teamsMap.set(
+        teamId,
+        existing
+          ? {
+              ...existing,
+              stadium: row.team.stadium ?? existing.stadium,
+              founded: row.team.founded ?? existing.founded,
+              manager: row.team.manager ?? existing.manager,
+            }
+          : this.mapTeams(row.team, index++),
+      );
     });
 
     const matchdays = matches.map((m) => m.matchday ?? 0);
@@ -161,18 +184,15 @@ export class SportsDataService extends BaseService {
       currentMatchday: matchdays.length ? Math.max(...matchdays) : 0,
       logoUrl: config.logoUrl,
       teams: Array.from(teamsMap.values()),
-      standings,
+      standings: this.mapStandings(standings),
       fixtures: matches.map((m) => this.mapFixture(m)),
     };
   }
 
-  private mapStandings(res: StandingsResponse): StandingEntry[] {
-    const totalTable = res.standings.find((s) => s.type == 'TOTAL');
-    if (!totalTable) return [];
-
-    return totalTable.table.map((row) => ({
-      teamId: String(row.team.id),
-      teamCrest: row.team.crest,
+  private mapStandings(standings: BackendStanding[]): StandingEntry[] {
+    return standings.map((row) => ({
+      teamId: String(row.teamId),
+      teamCrest: row.team.crestUrl,
       played: row.playedGames,
       won: row.won,
       drawn: row.draw,

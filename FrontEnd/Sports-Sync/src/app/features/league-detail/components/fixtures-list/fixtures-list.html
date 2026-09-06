@@ -49,7 +49,7 @@
 
       @if (fixture.status === 'UPCOMING' && fixture.prediction) {
         <div
-          class="pointer-events-none absolute bottom-full left-1/2 z-20 -translate-x-1/2 pb-2 sm:bottom-auto sm:left-full sm:top-1/2 sm:translate-x-0 sm:-translate-y-1/2 sm:pb-0 sm:pl-3 group-hover:block"
+          class="win-probability-popover pointer-events-none absolute bottom-full left-1/2 z-20 -translate-x-1/2 pb-2 sm:bottom-auto sm:left-full sm:top-1/2 sm:translate-x-0 sm:-translate-y-1/2 sm:pb-0 sm:pl-3 group-hover:block"
           [class]="activeProbabilityId() === fixture.id ? 'block' : 'hidden'"
         >
           <app-win-probability
