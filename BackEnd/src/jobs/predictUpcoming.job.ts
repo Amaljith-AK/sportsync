@@ -14,12 +14,10 @@ async function predictUpcomingFixtures(){
     const upcoming = await prisma.match.findMany({
         where:{
             status:{in:['SCHEDULED','TIMED']},
-            utcDate:{
-                gte:new Date(),
-                lte: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // next 7 days
-            }
         },
-        include:{prediction:true}
+        include:{prediction:true},
+        orderBy:{utcDate:'asc'},
+        take:20
     })
 
     const needsPrediction = upcoming.filter((m)=>{
