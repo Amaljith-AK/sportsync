@@ -7,12 +7,12 @@ const router = Router()
 
 router.get('/matches/:code',async(req,res)=>{
     try{
-        const matches = await prisma.match.findMany({
+        const recentPast = await prisma.match.findMany({
             where:{
                 competitionCode: req.params.code,
                 utcDate:{
-                    gte:new Date(Date.now()-86400000),
-                    lte:new Date(Date.now() + 7 * 86400000)
+                    gte:new Date(Date.now()- 7 * 86400000),
+                    lt:new Date()
                 },
             },
             include:{
@@ -21,10 +21,29 @@ router.get('/matches/:code',async(req,res)=>{
                 prediction:true
             },
             orderBy:{
-                utcDate:'asc'
-            }
+                utcDate:'desc'
+            },
+            take:10
         });
-        res.json(matches);
+
+
+        const upcoming = await prisma.match.findMany({
+            where:{
+                competitionCode:req.params.code,
+                utcDate:{
+                    gte:new Date()
+                }
+            },
+            include:{
+                homeTeam:true,awayTeam:true,prediction:true
+            },
+            orderBy:{
+                utcDate:'asc'
+            },
+            take:10
+        })
+
+        res.json([...recentPast.reverse(),...upcoming]);
     }catch(err){
         console.log(err)
         res.status(500).json({message:'Failed to fetch matches'})
@@ -89,6 +108,10 @@ router.get('/standings/:code',async(req,res)=>{
         console.error(err);
         res.status(500).json({ message: 'Failed to fetch standings' });
     }
+})
+    
+router.get('/health',(req,res)=>{
+    res.json({status:'ok',time:new Date().toISOString()})
 })
 
 export default router;
