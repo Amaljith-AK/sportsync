@@ -20,7 +20,7 @@ app.use('/api/admin', adminRoutes);
 
 startScheduler();
 startLiveCheckJob();
-startPredictionScheduler();
+// startPredictionScheduler();
 
 const server = http.createServer(app)
 initLiveGateway(server)

@@ -16,6 +16,7 @@ model Team {
   founded     Int?
   manager     String?
   clubColors  String?
+  jsonTeamData Json?
   homeMatches Match[]    @relation("HomeTeam")
   awayMatches Match[]    @relation("AwayTeam")
   standings   Standing[]

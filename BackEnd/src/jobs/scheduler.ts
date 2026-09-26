@@ -1,11 +1,12 @@
 import cron from 'node-cron';
 import { syncService } from '../services/sync.service';
+import { predictUpcomingFixtures } from './predictUpcoming.job';
 
 
 const COMPETITIONS = ['PL', 'PD', 'BL1', 'SA'];
 
 export function startScheduler() {
-    cron.schedule('*/10 * * * *',async ()=>{
+    cron.schedule('0 * * * *',async ()=>{
 
         for(const code of COMPETITIONS){
             console.log(`⏰ Running scheduled sync for ${code}...`)
@@ -16,9 +17,15 @@ export function startScheduler() {
                 console.error(`❌ Scheduled sync failed for ${code}:`, err);
             }
         }
+
+        try{
+            await predictUpcomingFixtures();
+        }catch(err){
+            console.error('❌ Prediction sweep failed:', err);
+        }
     });
 
-    console.log('📅 Scheduler initialized — syncing every 6 hours',COMPETITIONS.join(', '))
+    console.log('📅 Scheduler initialized — syncing every hour',COMPETITIONS.join(', '))
 }
 
 

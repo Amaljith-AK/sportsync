@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { prisma } from '../lib/prisma';
 import { footballDataService } from '../services/footballData.service';
 
@@ -11,7 +12,7 @@ function sleep(ms:number){
 export async function enrichAllTeams(){
     const teams = await prisma.team.findMany({
         where:{
-            OR:[{stadium:null},{founded:null}]
+            OR:[{stadium:null},{founded:null},{jsonTeamData:{equals:Prisma.DbNull}}]
         }
     })
     console.log(`🔧 Enriching ${teams.length} teams with stadium/founded/manager data...`);
@@ -26,6 +27,7 @@ export async function enrichAllTeams(){
                 founded: detail.founded ?? null,
                 manager: detail.coach?.name ?? null,
                 clubColors: detail.clubColors ?? null,
+                jsonTeamData: detail,
               },
             });
             console.log(`✅ Enriched ${team.name} (stadium: ${detail.venue ?? 'N/A'}, founded: ${detail.founded ?? 'N/A'})`);
