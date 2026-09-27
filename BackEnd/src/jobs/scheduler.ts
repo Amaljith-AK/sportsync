@@ -1,9 +1,8 @@
 import cron from 'node-cron';
 import { syncService } from '../services/sync.service';
 import { predictUpcomingFixtures } from './predictUpcoming.job';
+import { COMPETITIONS } from '../models/competition.model';
 
-
-const COMPETITIONS = ['PL', 'PD', 'BL1', 'SA'];
 
 export function startScheduler() {
     cron.schedule('0 * * * *',async ()=>{
