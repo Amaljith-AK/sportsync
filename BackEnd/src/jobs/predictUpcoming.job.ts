@@ -11,6 +11,20 @@ function sleep(ms:number){
 const ONE_HOUR = 60 * 60 * 1000;
 const UPCOMING_PER_LEAGUE = 10;
 
+async function predictWithRetry(homeTeamId: number, awayTeamId: number, retries = 2): Promise<any> {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+            return await mlPredictionService.predict(homeTeamId, awayTeamId);
+        } catch (err: any) {
+            if (attempt === retries) throw err;
+            const status = err?.response?.status;
+            const wait = status === 429 ? 30000 : 20000; // ← changed
+            console.log(`⏳ Retry ${attempt + 1} for Django in ${wait / 1000}s (status: ${status ?? 'unknown'})`);
+            await sleep(wait);
+        }
+    }
+}
+
 async function predictUpcomingFixtures(){
 
     // Fetch each league's next fixtures in parallel (cheap DB reads)
@@ -46,7 +60,7 @@ async function predictUpcomingFixtures(){
         // ML calls stay sequential, gentle on Django's cold-start-prone free tier
         for (const match of needsPrediction){
             try{
-                const result = await mlPredictionService.predict(match.homeTeamId,match.awayTeamId)
+                const result = await predictWithRetry(match.homeTeamId, match.awayTeamId);
 
                 await prisma.prediction.upsert({
                     where:{matchId:match.id},
