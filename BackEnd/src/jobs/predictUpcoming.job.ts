@@ -9,7 +9,7 @@ function sleep(ms:number){
 }
 
 const ONE_HOUR = 60 * 60 * 1000;
-const UPCOMING_PER_LEAGUE = 20;
+const UPCOMING_PER_LEAGUE = 10;
 
 async function predictUpcomingFixtures(){
 
@@ -67,7 +67,7 @@ async function predictUpcomingFixtures(){
             }catch(err){
                 console.error(`❌ Failed to predict match ${match.id}:`, err);
             }
-            await sleep(500); // small pause between calls
+            await sleep(3000); // small pause between calls
         }
     }
 
